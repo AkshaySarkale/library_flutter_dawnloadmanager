@@ -12,9 +12,31 @@ class DownloadManager {
     try {
       onStarted?.call();
 
+      // Auto-generate filename if not provided
+      String finalFileName;
+
+      if (fileName != null && fileName.isNotEmpty) {
+        finalFileName = fileName;
+      } else {
+        try {
+          final uri = Uri.parse(url);
+
+          if (uri.pathSegments.isNotEmpty &&
+              uri.pathSegments.last.isNotEmpty) {
+            finalFileName = uri.pathSegments.last;
+          } else {
+            finalFileName =
+            "file_${DateTime.now().millisecondsSinceEpoch}";
+          }
+        } catch (_) {
+          finalFileName =
+          "file_${DateTime.now().millisecondsSinceEpoch}";
+        }
+      }
+
       FileDownloader.downloadFile(
         url: url,
-        name: fileName,
+        name: finalFileName,
 
         onProgress: (fileName, progress) {
           onProgress?.call(progress);
