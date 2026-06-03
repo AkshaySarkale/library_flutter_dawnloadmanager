@@ -1,7 +1,7 @@
 name: library_flutter_dawnloadmanager
 description: "A new Flutter package project."
 version: 0.0.1
-homepage:
+homepage: https://github.com/Excelsior-Technologies-Community/library_flutter_dawnloadmanager.git
 
 environment:
   sdk: ^3.12.0

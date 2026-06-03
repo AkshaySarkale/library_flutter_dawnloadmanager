@@ -59,7 +59,7 @@ Add dependency in `pubspec.yaml`
 dependencies:
   library_flutter_dawnloadmanager:
     git:
-      url: https://github.com/AkshaySarkale/library_flutter_dawnloadmanager.git
+      url: https://github.com/Excelsior-Technologies-Community/library_flutter_dawnloadmanager.git
 ```
 *(Note: Use `path: ../library_flutter_dawnloadmanager` if testing locally in the same workspace)*
 
