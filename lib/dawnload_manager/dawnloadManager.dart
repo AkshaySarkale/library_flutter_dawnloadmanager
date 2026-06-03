@@ -1,57 +1,53 @@
-import 'package:flutter_file_downloader/flutter_file_downloader.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:open_filex/open_filex.dart';
 
 class DownloadManager {
-  static Future<void> download({
+  /// Start Download
+  static Future<String?> download({
     required String url,
+    required String saveDir,
     String? fileName,
-    Function()? onStarted,
-    Function(double progress)? onProgress,
-    Function(String path)? onCompleted,
-    Function(String error)? onFailed,
   }) async {
     try {
-      onStarted?.call();
-
-      // Auto-generate filename if not provided
-      String finalFileName;
-
-      if (fileName != null && fileName.isNotEmpty) {
-        finalFileName = fileName;
-      } else {
-        try {
-          final uri = Uri.parse(url);
-
-          if (uri.pathSegments.isNotEmpty &&
-              uri.pathSegments.last.isNotEmpty) {
-            finalFileName = uri.pathSegments.last;
-          } else {
-            finalFileName =
-            "file_${DateTime.now().millisecondsSinceEpoch}";
-          }
-        } catch (_) {
-          finalFileName =
-          "file_${DateTime.now().millisecondsSinceEpoch}";
-        }
-      }
-
-      FileDownloader.downloadFile(
+      final taskId = await FlutterDownloader.enqueue(
         url: url,
-        name: finalFileName,
-
-        onProgress: (fileName, progress) {
-          onProgress?.call(progress);
-        },
-
-        onDownloadCompleted: (path) {
-          onCompleted?.call(path);
-        },
-
-        onDownloadError: (error) {
-          onFailed?.call(error.toString());
-        },
+        savedDir: saveDir,
+        fileName: fileName,
+        showNotification: true,
+        openFileFromNotification: true,
       );
+
+      return taskId;
     } catch (e) {
-      onFailed?.call(e.toString());
+      throw Exception(e.toString());
     }
+  }
+
+  /// Pause Download
+  static Future<void> pause(String taskId) async {
+    await FlutterDownloader.pause(taskId: taskId);
+  }
+
+  /// Resume Download
+  static Future<String?> resume(String taskId) async {
+    return await FlutterDownloader.resume(taskId: taskId);
+  }
+
+  /// Cancel Download
+  static Future<void> cancel(String taskId) async {
+    await FlutterDownloader.cancel(taskId: taskId);
+  }
+
+  /// Open Downloaded File
+  static Future<void> openFile(String path) async {
+    await OpenFilex.open(path);
+  }
+
+  /// Remove Download
+  static Future<void> remove(String taskId) async {
+    await FlutterDownloader.remove(
+      taskId: taskId,
+      shouldDeleteContent: true,
+    );
   }
 }
