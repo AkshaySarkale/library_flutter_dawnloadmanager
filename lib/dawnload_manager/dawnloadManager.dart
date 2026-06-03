@@ -14,7 +14,6 @@ class DownloadManager {
 
       FileDownloader.downloadFile(
         url: url,
-
         name: fileName,
 
         onProgress: (fileName, progress) {
