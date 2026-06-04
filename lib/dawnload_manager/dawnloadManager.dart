@@ -2,12 +2,12 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:open_filex/open_filex.dart';
 
 class DownloadManager {
-  /// Initialize downloader
   static Future<void> initialize() async {
     await FlutterDownloader.initialize(
       debug: true,
       ignoreSsl: true,
     );
+    print("FlutterDownloader initialized");
   }
 
   /// Start download
@@ -17,8 +17,8 @@ class DownloadManager {
     String? fileName,
   }) async {
     try {
-      print("Download URL : $url");
-      print("Save Directory : $saveDir");
+      print("Download URL: $url");
+      print("Save Directory: $saveDir");
 
       final taskId = await FlutterDownloader.enqueue(
         url: url,
@@ -26,14 +26,14 @@ class DownloadManager {
         fileName: fileName,
         showNotification: true,
         openFileFromNotification: true,
-        saveInPublicStorage: true,
+        saveInPublicStorage: true, // CRITICAL: Required for Android 11+
       );
 
-      print("Task ID : $taskId");
+      print("Task ID: $taskId");
 
       return taskId;
     } catch (e) {
-      print("Download Error : $e");
+      print("Download Error: $e");
       rethrow;
     }
   }
@@ -41,11 +41,14 @@ class DownloadManager {
   /// Pause download
   static Future<void> pause(String taskId) async {
     await FlutterDownloader.pause(taskId: taskId);
+    print("Download paused: $taskId");
   }
 
   /// Resume download
   static Future<String?> resume(String taskId) async {
-    return await FlutterDownloader.resume(taskId: taskId);
+    final newTaskId = await FlutterDownloader.resume(taskId: taskId);
+    print("Download resumed: $taskId -> $newTaskId");
+    return newTaskId;
   }
 
   /// Retry failed download
@@ -56,6 +59,7 @@ class DownloadManager {
   /// Cancel download
   static Future<void> cancel(String taskId) async {
     await FlutterDownloader.cancel(taskId: taskId);
+    print("Download cancelled: $taskId");
   }
 
   /// Remove download
@@ -64,6 +68,7 @@ class DownloadManager {
       taskId: taskId,
       shouldDeleteContent: true,
     );
+    print("Download removed: $taskId");
   }
 
   /// Open downloaded file
