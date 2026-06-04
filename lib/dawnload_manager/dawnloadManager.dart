@@ -26,6 +26,7 @@ class DownloadManager {
         fileName: fileName,
         showNotification: true,
         openFileFromNotification: true,
+        saveInPublicStorage: true,
       );
 
       print("Task ID : $taskId");
